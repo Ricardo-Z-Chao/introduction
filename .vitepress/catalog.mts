@@ -18,7 +18,14 @@ interface CatalogConfig {
   rewrites: Record<string, string>;
 }
 
-let raw: ContentConfig[] = [];
+let raw: ContentConfig[] = [
+  {
+    text: "包管理器",
+    type: ContentType.NOTE,
+    isFirst: true,
+    routeRewriteLink: "package-manager",
+  },
+];
 
 function handler(raw: ContentConfig[]): DefaultTheme.SidebarMulti {
   let result = {
