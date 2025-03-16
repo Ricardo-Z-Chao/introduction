@@ -1,4 +1,6 @@
 import { defineConfig } from "vitepress";
+import catalog from "./catalog.mts";
+const GITHUB = "https://github.com/Ricardo-Z-Chao";
 
 export default defineConfig({
   title: "我的主页",
@@ -9,19 +11,13 @@ export default defineConfig({
       level: [1, 3],
     },
     logo: "/favicon.ico",
-    nav: [
-      { text: "主页", link: "/" },
-      { text: "文章", link: "" },
-      { text: "笔记", link: "" },
-    ],
-    socialLinks: [
-      { icon: "github", link: "https://github.com/Ricardo-Z-Chao" },
-    ],
+    nav: catalog.nav,
+    sidebar: catalog.sidebar,
+    socialLinks: [{ icon: "github", link: GITHUB }],
     footer: {
-      message:
-        'Released under the <a href="https://github.com/Ricardo-Z-Chao/introduction/blob/master/LICENSE">MIT License</a>.',
-      copyright:
-        'Copyright © 2025-present <a href="https://github.com/Ricardo-Z-Chao">Ricardo.Z.Chao</a>',
+      message: `Released under the <a href="${GITHUB}/introduction/blob/master/LICENSE">MIT License</a>.`,
+      copyright: `Copyright © 2025-present <a href="${GITHUB}">Ricardo.Z.Chao</a>`,
     },
   },
+  rewrites: catalog.rewrites,
 });
