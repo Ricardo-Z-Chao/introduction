@@ -6,6 +6,11 @@ export default defineConfig({
   title: "我的主页",
   srcDir: "src",
   cleanUrls: true,
+  vite: {
+    build: {
+      assetsInlineLimit: 0,
+    },
+  },
   themeConfig: {
     outline: {
       level: [1, 3],

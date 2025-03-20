@@ -18,21 +18,26 @@ interface CatalogConfig {
   rewrites: Record<string, string>;
 }
 
-let raw: ContentConfig[] = [
+let rawContentConfig: ContentConfig[] = [
   {
     text: "包管理器",
     type: ContentType.NOTE,
     isFirst: true,
     routeRewriteLink: "package-manager",
   },
+  {
+    text: "Maven",
+    type: ContentType.NOTE,
+    routeRewriteLink: "maven",
+  },
 ];
 
-function handler(raw: ContentConfig[]): DefaultTheme.SidebarMulti {
+function handler(): DefaultTheme.SidebarMulti {
   let result = {
     [`/${ContentType.ARTICLE}/`]: [] as DefaultTheme.SidebarItem[],
     [`/${ContentType.NOTE}/`]: [] as DefaultTheme.SidebarItem[],
   };
-  raw.forEach((e) => {
+  rawContentConfig.forEach((e) => {
     result[`/${e.type}/`].push({
       text: e.text,
       link: `/${e.type}/${e.routeRewriteLink ?? e.text}`,
@@ -42,16 +47,20 @@ function handler(raw: ContentConfig[]): DefaultTheme.SidebarMulti {
 }
 
 function firstPage(type: ContentType): string {
-  let rawConfig = raw.filter((e) => e.type === type).find((e) => e.isFirst);
-  return `/${type}/${rawConfig?.routeRewriteLink ?? rawConfig?.text ?? ""}`;
+  let filteredRawConfig = rawContentConfig
+    .filter((e) => e.type === type)
+    .find((e) => e.isFirst);
+  return `/${type}/${
+    filteredRawConfig?.routeRewriteLink ?? filteredRawConfig?.text ?? ""
+  }`;
 }
 
-function rewrites(raw: ContentConfig[]): Record<string, string> {
+function rewrites(): Record<string, string> {
   let result = {};
-  raw
+  rawContentConfig
     .filter((e) => e.routeRewriteLink !== undefined)
     .forEach((e) => {
-      result[`:pkg/(.*)`] = `:pkg/${e.routeRewriteLink}.md`;
+      result[`${e.type}/${e.text}.md`] = `${e.type}/${e.routeRewriteLink}.md`;
     });
   return result;
 }
@@ -68,8 +77,8 @@ const catalog: CatalogConfig = {
       link: firstPage(ContentType.NOTE),
     },
   ],
-  sidebar: handler(raw),
-  rewrites: rewrites(raw),
+  sidebar: handler(),
+  rewrites: rewrites(),
 };
 
 export default catalog;
