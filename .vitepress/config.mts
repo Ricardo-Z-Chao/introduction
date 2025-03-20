@@ -1,5 +1,6 @@
 import { defineConfig } from "vitepress";
 import catalog from "./catalog.mts";
+import mermaidPlugin from "../plugins/markdown-it-mermaid.mts";
 
 const GITHUB = "https://github.com/Ricardo-Z-Chao";
 
@@ -11,6 +12,14 @@ export default defineConfig({
   vite: {
     build: {
       assetsInlineLimit: 0,
+    },
+  },
+  markdown: {
+    image: {
+      lazyLoading: true,
+    },
+    config: (md) => {
+      md.use(mermaidPlugin);
     },
   },
   themeConfig: {
