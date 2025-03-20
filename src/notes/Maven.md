@@ -1,25 +1,23 @@
-# 基础
+# 安装
 
-## 安装
-
-下载 Maven 后将安装目录下的`bin`文件夹添加到环境变量中，使用`mvn -v`检查安装是否成功。安装目录内容如下：
+下载 Maven 后将安装目录下的 `bin` 文件夹添加到环境变量中，使用 `mvn -v` 检查安装是否成功，安装目录内容如下：
 
 ```
-maven/
-  |-- bin/
-  |-- boot/
-  |-- conf/
-  |-- lib/
+maven
+  ├── bin
+  ├── boot
+  ├── conf
+  └── lib
 ```
 
-- **bin**：包含了 mvn 运行脚本，这些脚本用来配置 Java 命令。其中 mvn 是基于 UNIX 平台的 shell 脚本，`mvn.bat`是基于 Windows 平台的 bat 脚本。该目录还包含`m2.conf`文件，这是 classworlds 的配置文件。
-- **boot**：该目录只有一个文件`plexus-classworlds.jar`，这是一个类加载器框架，相对于默认的 Java 类加载器，它提供了更丰富的语法以方便配置，Maven 使用该框架加载自己的类库。
-- **conf**：该目录包含`setting.xml`文件，这个文件可以全局定制 Maven 的行为。一般将这个文件复制到`~/.m2/`目录下，然后修改文件，在用户范围内定制 Maven 的行为。前一个`settings.xml`也称为全局设置，后一个`settings.xml`称为用户设置，如果这两个文件都存在，它们的内容将被合并，用户设置的`settings.xml`将占主导地位。
+- **bin**：包含了 mvn 运行脚本，这些脚本用来配置 Java 命令。其中 mvn 是基于 UNIX 平台的 shell 脚本，`mvn.bat` 是基于 Windows 平台的 bat 脚本。该目录还包含 `m2.conf` 文件，这是 classworlds 的配置文件。
+- **boot**：该目录只有一个文件 `plexus-classworlds.jar`，这是一个类加载器框架，相对于默认的 Java 类加载器，它提供了更丰富的语法以方便配置，Maven 使用该框架加载自己的类库。
+- **conf**：该目录包含 `setting.xml` 文件，这个文件可以全局定制 Maven 的行为。一般将这个文件复制到 `~/.m2` 目录下，然后修改文件，在用户范围内定制 Maven 的行为。前一个 `settings.xml` 也称为全局设置，后一个 `settings.xml` 称为用户设置，如果这两个文件都存在，它们的内容将被合并，用户设置的 `settings.xml` 将占主导地位。
 - **lib**：该目录包含了所有 Maven 运行时需要的类库。
 
-## 设置 HTTP 代理
+# 设置 HTTP 代理
 
-有时出于安全因素，需要使用通过安全认证的代理访问网络，为 Maven 配置 HTTP 代理让它正常访问外部仓库。修改`~/.m2/setting.xml`文件，配置如下：
+有时出于安全因素，需要使用通过安全认证的代理访问网络，为 Maven 配置 HTTP 代理让它正常访问外部仓库，修改 `~/.m2/setting.xml`文件，配置如下：
 
 ```xml
 <proxies>
@@ -39,11 +37,13 @@ maven/
 </proxies>
 ```
 
+> [!TIP]
+>
 > 如果 proxies 下声明多个 proxy，默认第一个被激活的 proxy 会生效。
 
-## POM
+# POM
 
-Maven 的核心是`pom.xml`文件，定义了项目的基本信息，用于描述项目如何构建，声明项目依赖等等，这是 POM 定义所允许的最小值：
+Maven 的核心是 `pom.xml` 文件，定义了项目的基本信息，用于描述项目如何构建，声明项目依赖等等，这是 POM 定义所允许的最小值：
 
 ```xml
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -55,16 +55,20 @@ Maven 的核心是`pom.xml`文件，定义了项目的基本信息，用于描�
 </project>
 ```
 
-## Archetype
+# Archetype
 
-默认情况下，项目的主代码位于`src/main/java`目录中，而测试代码位于`src/test/java`中，`pom.xml`文件放置在项目的根目录中。
+默认情况下，项目的主代码位于 `src/main/java` 目录中，而测试代码位于 `src/test/java` 中，`pom.xml` 文件放置在项目的根目录中：
 
 ```
-|-- project/
-      |-- src/main/java/
-      |-- src/main/resources/
-      |-- src/test/java/
-      |-- pom.xml
+project
+ ├── src
+ |    ├── main
+ |	  |    ├── java
+ |    |	   └── resources
+ |    └── test
+ |	       ├── java
+ |     	   └── resources
+ └── pom.xml
 ```
 
 Maven 提供了 Archetype 来快速搭建项目骨架，在命令行输入：
@@ -73,16 +77,16 @@ Maven 提供了 Archetype 来快速搭建项目骨架，在命令行输入：
 mvn archetype:generate
 ```
 
-## Maven Wrapper
+# Maven Wrapper
 
-Maven Wrapper 可以为项目提供一个指定版本的 Maven 来使用，来解决不同环境中 Maven 版本差异的问题。首先配置环境变量`MAVEN_USER_HOME`，Maven Wrapper 将使用这个环境变量作为安装 Maven 发行版的根目录（默认情况下，Maven Wrapper 安装的 Maven 发行版在`~/.m2/wrapper/dists`下）。在项目根目录下通过`mvn wrapper:wrapper`命令来安装 Maven Wrapper。
+Maven Wrapper 可以为项目提供一个指定版本的 Maven 来使用，来解决不同环境中 Maven 版本差异的问题。首先配置环境变量 `MAVEN_USER_HOME`，Maven Wrapper 将使用这个环境变量作为安装 Maven 发行版的根目录（默认情况下，Maven Wrapper 安装的 Maven 发行版在 `~/.m2/wrapper/dists` 下）。在项目根目录下通过 `mvn wrapper:wrapper` 命令来安装 Maven Wrapper。
 
 ```shell
-# 指定使用Maven的版本，-N表示包装器将只应用于当前目录的主项目，而不是任何子模块
+# 指定使用 Maven 的版本，-N 表示包装器将只应用于当前目录的主项目，而不是任何子模块
 mvn -N wrapper:wrapper -Dmaven=3.5.4
 ```
 
-安装完成后可以使用`mvnw`来代替常规的`mvn`命令，在使用`mvnw`命令之前，Maven Wrapper 检查是否安装了指定版本的 Maven，如果没有则会自动下载所需的 Maven 版本（使用`maven-wrapper.jar`下载 Maven 发行版）。如果要更换 Maven 版本，可以在`.mvn/wrapper/maven-wrapper.properties`文件中指定要使用的 Maven 版本。
+安装完成后可以使用 `mvnw` 来代替常规的 `mvn` 命令，在使用 `mvnw` 命令之前，Maven Wrapper 检查是否安装了指定版本的 Maven，如果没有则会自动下载所需的 Maven 版本（使用 `maven-wrapper.jar` 下载 Maven 发行版）。如果要更换 Maven 版本，可以在 `.mvn/wrapper/maven-wrapper.properties` 文件中指定要使用的 Maven 版本：
 
 ```properties
 distributionUrl=https://repo1.maven.org/maven2/org/apache/maven/apache-maven/3.5.2/apache-maven-3.5.2-bin.zip
@@ -94,11 +98,25 @@ distributionUrl=https://repo1.maven.org/maven2/org/apache/maven/apache-maven/3.5
 
 Maven 坐标（*coordinate*）为各种构件引入了秩序，任何一个构件必须明确自己的坐标，坐标元素包括：
 
-- **groupId**：定义当前 Maven 项目所隶属的实际项目。Maven 项目和实际项目不是一对一的关系，由于 Maven 中模块的概念，一个实际项目往往会有很多模块。groupId 通常与域名反向对应，例如 groupId 为 org.sonatype.nexus，表示 sonatype 公司的 nexus 这一实际项目。
-- **artifactId**：定义实际项目中的一个 Maven 项目（模块）。推荐做法是使用实际项目的名称作为前缀，例如 nexus-indexer。
-- **version**：定义 Maven 项目当前所处的版本。
-- **packaging**：定义 Maven 项目的打包方式。打包方式通常与所生成构件的文件扩展名对应，例如 packaging 为 jar，则最终文件名为`nexus-indexer-2.0.0.jar`。当不定义 packaging 时，Maven 会使用默认值 jar。
-- **classifier**：定义构建输出的一些附属构件，附属构构件与主构件对应，例如主构件是`nexus-indexer-2.0.0.jar`，该项目可能会通过一些插件生成`nexus-indexer-2.0.0-javador.jar`等等附属构件。不能直接定义项目的附属构件，因为附属构件不是项目直接生成的。
+- `groupId`
+
+  定义当前 Maven 项目所隶属的实际项目。Maven 项目和实际项目不是一对一的关系，由于 Maven 中模块的概念，一个实际项目往往会有很多模块。groupId 通常与域名反向对应，例如 groupId 为 org.sonatype.nexus，表示 sonatype 公司的 nexus 这一实际项目。
+
+- `artifactId`
+
+  定义实际项目中的一个 Maven 项目（模块）。推荐做法是使用实际项目的名称作为前缀，例如 nexus-indexer。
+
+- `version`
+
+  定义 Maven 项目当前所处的版本。
+
+- `packaging`
+
+  定义 Maven 项目的打包方式。打包方式通常与所生成构件的文件扩展名对应，例如 packaging 为 jar，则最终文件名为`nexus-indexer-2.0.0.jar`。当不定义 packaging 时，Maven 会使用默认值 jar。
+
+- `classifier`
+
+  定义构建输出的一些附属构件，附属构构件与主构件对应，例如主构件是`nexus-indexer-2.0.0.jar`，该项目可能会通过一些插件生成`nexus-indexer-2.0.0-javador.jar`等等附属构件。不能直接定义项目的附属构件，因为附属构件不是项目直接生成的。
 
 ##  依赖配置
 
@@ -122,12 +140,10 @@ Maven 坐标（*coordinate*）为各种构件引入了秩序，任何一个构�
 </dependencies>
 ```
 
-- **type**：依赖的类型，对应于项目坐标定义的 packaging，大部分情况下不必声明，默认值为 jar。
-- **scope**：依赖的范围。
-- **optional**：标记依赖是否可选。
-- **exclusions**：用来排除传递性依赖。
-
-> 大部分情况下只需声明依赖的基本坐标。
+- `type`：依赖的类型，对应于项目坐标定义的 packaging，大部分情况下不必声明，默认值为 jar。
+- `scope`：依赖的范围。
+- `optional`：标记依赖是否可选。
+- `exclusions`：用来排除传递性依赖。
 
 ## 依赖范围
 
@@ -175,7 +191,7 @@ Maven 在编译项目主代码时需要使用一套 classpath，在编译和执�
   
 - import
 
-  这个范围只支持在`<dependencyManagement>`中`<type>`为`pom`的依赖中使用，并且它们会被指定的 POM 文件中的`<dependencyManagement>`部分的有效依赖列表所替代。
+  这个范围只支持在 `<dependencyManagement>` 中 `<type>` 为 `pom` 的依赖中使用，并且它们会被指定的 POM 文件中的 `<dependencyManagement>` 部分的有效依赖列表所替代。
   
   ```xml
   <dependencyManagement>
