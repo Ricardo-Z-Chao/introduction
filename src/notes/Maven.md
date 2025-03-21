@@ -98,25 +98,25 @@ distributionUrl=https://repo1.maven.org/maven2/org/apache/maven/apache-maven/3.5
 
 Maven 坐标（*coordinate*）为各种构件引入了秩序，任何一个构件必须明确自己的坐标，坐标元素包括：
 
-- `groupId`
+- groupId
 
   定义当前 Maven 项目所隶属的实际项目。Maven 项目和实际项目不是一对一的关系，由于 Maven 中模块的概念，一个实际项目往往会有很多模块。groupId 通常与域名反向对应，例如 groupId 为 org.sonatype.nexus，表示 sonatype 公司的 nexus 这一实际项目。
 
-- `artifactId`
+- artifactId
 
   定义实际项目中的一个 Maven 项目（模块）。推荐做法是使用实际项目的名称作为前缀，例如 nexus-indexer。
 
-- `version`
+- version
 
   定义 Maven 项目当前所处的版本。
 
-- `packaging`
+- packaging
 
-  定义 Maven 项目的打包方式。打包方式通常与所生成构件的文件扩展名对应，例如 packaging 为 jar，则最终文件名为`nexus-indexer-2.0.0.jar`。当不定义 packaging 时，Maven 会使用默认值 jar。
+  定义 Maven 项目的打包方式。打包方式通常与所生成构件的文件扩展名对应，例如 packaging 为 jar，则最终文件名为 `nexus-indexer-2.0.0.jar`。当不定义 packaging 时，Maven 会使用默认值 jar。
 
-- `classifier`
+- classifier
 
-  定义构建输出的一些附属构件，附属构构件与主构件对应，例如主构件是`nexus-indexer-2.0.0.jar`，该项目可能会通过一些插件生成`nexus-indexer-2.0.0-javador.jar`等等附属构件。不能直接定义项目的附属构件，因为附属构件不是项目直接生成的。
+  定义构建输出的一些附属构件，附属构构件与主构件对应，例如主构件是 `nexus-indexer-2.0.0.jar`，该项目可能会通过一些插件生成 `nexus-indexer-2.0.0-javador.jar` 等等附属构件。不能直接定义项目的附属构件，因为附属构件不是项目直接生成的。
 
 ##  依赖配置
 
@@ -193,13 +193,13 @@ Maven 在编译项目主代码时需要使用一套 classpath，在编译和执�
 
   这个范围只支持在 `<dependencyManagement>` 中 `<type>` 为 `pom` 的依赖中使用，并且它们会被指定的 POM 文件中的 `<dependencyManagement>` 部分的有效依赖列表所替代。
   
-  ```xml
+  ```xml{7-8}
   <dependencyManagement>
       <dependencies>
           <dependency>
-              <groupId>xxxx</groupId>
-              <artifactId>xxxx</artifactId>
-              <version>xxxx</version>
+              <groupId>...</groupId>
+              <artifactId>...</artifactId>
+              <version>...</version>
               <type>pom</type>
               <scope>import</scope>
           </dependency>
@@ -235,7 +235,9 @@ flowchart LR
 | **provided** | provided |  —   | provided | provided |
 | **runtime**  | runtime  |  —   |    —     | runtime  |
 
-> 表中左边第一列表示第一直接依赖范围，第一行表示第二直接依赖范围，其中的元素表示传递性依赖的范围。
+> [!TIP]
+>
+> 表中左边第一列表示TIP第一直接依赖范围，第一行表示第二直接依赖范围，其中的元素表示传递性依赖的范围。
 
 ## 依赖调解
 
@@ -262,19 +264,20 @@ flowchart LR
  B --> Y["Y（可选）"]
 ```
 
-在项目 B 中的 POM 中使用`<optional>`元素声明使这两个依赖成为可选依赖，如果想要使用可选依赖，需要在项目 A 中显式声明这个依赖。
+在项目 B 中的 POM 中使用 `<optional>` 元素声明使这两个依赖成为可选依赖，如果想要使用可选依赖，需要在项目 A 中显式声明这个依赖。
 
-```xml
+```xml{5}
 <dependency>
     <groupId>...</groupId>
-    ...
+    <artifactId>...</artifactId>
+    <version>...</version>
     <optional>true</optional>
 <dependency>
 ```
 
 ## 排除依赖
 
-想要排除某个传递性依赖，使用`<exclusions>`元素声明排除这个传递性依赖：
+想要排除某个传递性依赖，使用 `<exclusions>` 元素声明排除这个传递性依赖：
 
 ```xml
 <exclusions>
@@ -282,11 +285,10 @@ flowchart LR
         <gounpId>...</gounpId>
         <artifactId>...</artifactId>
     </exclusion>
-    ...
 </exclusions>
 ```
 
-# 仓库 
+# 仓库
 
 Maven 仓库有两类：本地仓库和远程仓库。当 Maven 根据坐标寻找构件时，首先会查找本地仓库，如果本地仓库存在此构件则直接使用，如果没有则去远程仓库查找，再下载到本地仓库使用。
 
@@ -301,9 +303,9 @@ flowchart TD
 
 ## 本地仓库
 
-一般来说，在 Maven 项目中，没有`lib/`这样用来存放依赖文件的目录，当 Maven 在执行编译或者测试时，如果想要使用依赖文件，就会基于坐标使用本地仓库的依赖文件。
+一般来说，在 Maven 项目中，没有 `lib` 这样用来存放依赖文件的目录，当 Maven 在执行编译或者测试时，如果想要使用依赖文件，就会基于坐标使用本地仓库的依赖文件。
 
-默认情况下，每个用户在自己的用户目录下都有一个名为`.m2/repository/`的仓库目录，可以修改`settings.xml`文件中的配置，设置想要的仓库地址：
+默认情况下，每个用户在自己的用户目录下都有一个名为 `.m2/repository` 的仓库目录，可以修改 `settings.xml` 文件中的配置，设置想要的仓库地址：
 
 ```xml
 <settings>
@@ -311,9 +313,11 @@ flowchart TD
 </settings>
 ```
 
-一个构件只有在本地仓库中之后才能由其他 Maven 项目使用，可以使用从远程仓库下载构件，也可以将本地项目的构件安装到本地仓库中，使用`mvn clean install`命令将当前项目的构建输出文件安装到本地仓库。
+一个构件只有在本地仓库中之后才能由其他 Maven 项目使用，可以使用从远程仓库下载构件，也可以将本地项目的构件安装到本地仓库中，使用 `mvn clean install` 命令将当前项目的构建输出文件安装到本地仓库。
 
-> 默认情况下`~/.m2/settings.xml`文件是不存在的，用户需要从安装目录中复制`settings.xml`文件再进行编辑。
+> [!TIP]
+>
+> 默认情况下 `~/.m2/settings.xml` 文件是不存在的，用户需要从安装目录中复制 `settings.xml` 文件再进行编辑。
 
 ## 远程仓库
 
@@ -329,88 +333,92 @@ flowchart TD
 
 ## 配置远程仓库
 
-1. 远程仓库配置
+### 远程仓库配置
 
-   如果默认的中央仓库无法满足项目的要求，需要的构件可能存在于另一个远程仓库中，这时可以在 POM 中配置一个远程仓库，在`<repositories>`元素下可以声明多个远程仓库。任何一个仓库声明的 id 必须是唯一的，Maven 自带的中央仓库使用的 id 是 central，如果其他的仓库声明也使用该 id，就会覆盖中央仓库的配置。
+如果默认的中央仓库无法满足项目的要求，需要的构件可能存在于另一个远程仓库中，这时可以在 POM 中配置一个远程仓库，在 `<repositories>` 元素下可以声明多个远程仓库。任何一个仓库声明的 id 必须是唯一的，Maven 自带的中央仓库使用的 id 是 central，如果其他的仓库声明也使用该 id，就会覆盖中央仓库的配置。
 
-   ```xml
-   <repositories>
-     <repository>
-       <id>...</id>
-       <url>...</url>
-       <releases>
-         <!-- 开启仓库的发布版本下载支持 -->
-         <enabled>true</enabled>
-       </releases>
-       <snapshots>
-         <!-- 开启仓库的快照版本下载支持 -->
-         <enabled>true</enabled>
-       </snapshots>
-     </repository>
-     ...
-   </repositories>
-   ```
+```xml
+<repositories>
+  <repository>
+    <id>...</id>
+    <url>...</url>
+    <releases>
+      <!-- 开启仓库的发布版本下载支持 -->
+      <enabled>true</enabled>
+    </releases>
+    <snapshots>
+      <!-- 开启仓库的快照版本下载支持 -->
+      <enabled>true</enabled>
+    </snapshots>
+  </repository>
+  ...
+</repositories>
+```
 
-   对于`<releases>`和`<snapshots>`元素，它们还包含另外两个子元素`<updatePolicy>`和`<checksumPolicy>`。元素`<updatePolicy>`用来配置 Maven 从远程仓库更新的频率，值如下：
+对于 `<releases>` 和 `<snapshots>` 元素，它们还包含另外两个子元素 `<updatePolicy>` 和 `<checksumPolicy>`。
 
-   | 值         | 含义                        |
-   | :--------- | :-------------------------- |
-   | daily      | 默认值，表示每天检查一次    |
-   | never      | 从不检查更新                |
-   | always     | 每次构建都检查更新          |
-   | interval:n | 表示每隔 n 分钟检查一次更新 |
+- `<updatePolicy>`
 
-   元素`<checksumPolicy>`用来配置 Maven 检查校验和文件的策略，当构件被部署到 Maven 仓库中时，会同时部署对应的校验和文件。在下载构件的时候，Maven 会验证校验和文件。值如下：
+  这个元素用来配置 Maven 从远程仓库更新的频率，值如下：
 
-   | 值     | 含义                                     |
-   | ------ | ---------------------------------------- |
-   | warn   | 默认值，校验和错误会在执行构建时输出警告 |
-   | fail   | 校验和错误就让构建失败                   |
-   | ignore | 完全忽略校验和错误                       |
+  | 值         | 含义                        |
+  | :--------- | :-------------------------- |
+  | daily      | 默认值，表示每天检查一次    |
+  | never      | 从不检查更新                |
+  | always     | 每次构建都检查更新          |
+  | interval:n | 表示每隔 n 分钟检查一次更新 |
 
-2. 远程仓库的认证
+- `<checksumPolicy>`
 
-   大部分远程仓库无需认证就能访问，考虑到安全方面的问题，有时需要提供一些认证信息才能访问一些远程仓库，配置认证信息必须在`settings.xml`文件中，因为 POM 往往是被提交到代码仓库中供所有成员访问的，而`settings.xml`文件一般只放在本机，因此这种方式更安全。`settings.xml`文件中 server 元素的 id 必须和 POM 中需要认证的 repository 元素的 id 一致。
+  元素用来配置 Maven 检查校验和文件的策略，当构件被部署到 Maven 仓库中时，会同时部署对应的校验和文件。在下载构件的时候，Maven 会验证校验和文件，值如下：
 
-   ```xml
-   <servers>
-     <server>
-       <id>...</id>
-       <username>...</username>
-       <password>...</password>
-     </server>
-     ...
-   </servers>
-   ```
+  | 值     | 含义                                     |
+  | ------ | ---------------------------------------- |
+  | warn   | 默认值，校验和错误会在执行构建时输出警告 |
+  | fail   | 校验和错误就让构建失败                   |
+  | ignore | 完全忽略校验和错误                       |
 
-3. 部署到远程仓库
+### 远程仓库的认证
 
-   Maven 可以将项目生成的构建部署到远程仓库中，在 POM 中配置`<distributionManagement>`元素。配置完成后运行`mvn clean deploy`命令。
+大部分远程仓库无需认证就能访问，考虑到安全方面的问题，有时需要提供一些认证信息才能访问一些远程仓库，配置认证信息必须在 `settings.xml` 文件中，因为 POM 往往是被提交到代码仓库中供所有成员访问的，而 `settings.xml` 文件一般只放在本机，因此这种方式更安全。`settings.xml` 文件中 server 元素的 id 必须和 POM 中需要认证的 repository 元素的 id 一致。
 
-   ```xml
-   <distributionManagement>
-     <!-- 发布版本构件的仓库 -->
-     <repository>
-       <id>...</id>
-       <url>...</url>
-     </repository>
-     <!-- 快照版本构件的仓库 -->
-     <snapshotRepository>
-       <id>...</id>
-       <url>...</url>
-     </snapshotRepository>
-   </distributionManagement>
-   ```
+```xml
+<servers>
+  <server>
+    <id>...</id>
+    <username>...</username>
+    <password>...</password>
+  </server>
+  ...
+</servers>
+```
+
+### 部署到远程仓库
+
+Maven 可以将项目生成的构建部署到远程仓库中，在 POM 中配置 `<distributionManagement>` 元素。配置完成后运行 `mvn clean deploy` 命令。
+
+```xml
+<distributionManagement>
+  <!-- 发布版本构件的仓库 -->
+  <repository>
+    <id>...</id>
+    <url>...</url>
+  </repository>
+  <!-- 快照版本构件的仓库 -->
+  <snapshotRepository>
+    <id>...</id>
+    <url>...</url>
+  </snapshotRepository>
+</distributionManagement>
+```
 
 ## 快照版本
 
-假设模块 A 正在开发 2.1 版本，该版本还未正式发布，与模块 A 一同开发的还有模块 B，B 的功能依赖于 A，在开发的过程中，需要经常将模块 A 最新的构建输出，用于模块 B 的开发和集成调试。
+假设模块 A 正在开发 `2.1` 版本，该版本还未正式发布，与模块 A 一同开发的还有模块 B，B 的功能依赖于 A，在开发的过程中，需要经常将模块 A 最新的构建输出，用于模块 B 的开发和集成调试。
 
-Maven 的快照版本机制就是用来解决这个问题的，只需将模块 A 的版本设定为 2.1-SNAPSHOT，然后发布到私服中，在发布的过程中 Maven 会自动为构件打上时间戳，例如 2.1-20091214.224141-13，表示 2009/12/14-22:41:41 的第13次快照。有了时间戳 Maven 就能找到仓库中该构件 2.1-SNAPSHOT 版本最新的文件。
+Maven 的快照版本机制就是用来解决这个问题的，只需将模块 A 的版本设定为 `2.1-SNAPSHOT`，然后发布到私服中，在发布的过程中 Maven 会自动为构件打上时间戳，例如 `2.1-20091214.224141-13`，表示 2009/12/14-22:41:41 的第13次快照。有了时间戳 Maven 就能找到仓库中该构件 `2.1-SNAPSHOT` 版本最新的文件。
 
-在模块 B 中配置对于模块 A 的 2.1-SNAPSHOT 版本的依赖，在每次构建模块 B 时，Maven 就会自动从仓库中检查模块 A 的 2.1-SNAPSHOT 的最新构件，当发现有更新时便下载，默认每天检查一次更新。
-
-> 由仓库配置的元素`<updatePolicy>`来控制更新的频率。
+在模块 B 中配置对于模块 A 的 `2.1-SNAPSHOT` 版本的依赖，在每次构建模块 B 时，Maven 就会自动从仓库中检查模块 A 的 `2.1-SNAPSHOT` 的最新构件，当发现有更新时便下载，默认每天检查一次更新。
 
 ## 从仓库解析依赖的机制
 
@@ -436,14 +444,16 @@ Maven 的快照版本机制就是用来解决这个问题的，只需将模块 A
 </mirrors>
 ```
 
-`<mirrorOf>`元素表示该配置为某某仓库的镜像，任何对于该仓库的请求都会转至该镜像。可以配置值为`*`表示对于任何远程仓库的请求都会被转到这个镜像。
+`<mirrorOf>` 元素表示该配置为某仓库的镜像，任何对于该仓库的请求都会转至该镜像。可以配置值为`*`表示对于任何远程仓库的请求都会被转到这个镜像。
 
 # 生命周期
 
 Maven 的生命周期是对所有构建过程进行抽象和统一，生命周期本身不做任何实际的工作，在 Maven 的设计中，实际的任务都是交由插件来完成。每个构建步骤都可以绑定一个或者多个插件行为，而且 Maven 为大多数构建步骤编写并绑定了默认插件。当用户有特殊需要时，也可以配置插件定制构建行为，甚至自己编写插件。
 
-Maven 拥有三套相互独立的生命周期（`clean`、`default`、`site`），每个生命周期包含一些阶段，这些阶段是有顺序的，并且后面的阶段依赖于前面的阶段。
+Maven 拥有三套相互独立的生命周期`clean`、`default` 和 `site`，每个生命周期包含一些阶段，这些阶段是有顺序的，并且后面的阶段依赖于前面的阶段。
 
+> [!TIP]
+>
 > 完整的生命周期阶段请参考[链接](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html#lifecycle-reference)。
 
 从命令行执行 Maven 任务的主要方式就是调用 Maven 生命周期阶段，例如：
@@ -467,12 +477,14 @@ Maven 的核心是一个插件执行框架，所有工作都由插件完成。�
 
 - 构建插件（*Build Plugins*）
 
-    构建插件将在构建过程中执行，并且应该在 POM 中的`<build>`元素中配置它们。
+    构建插件将在构建过程中执行，并且应该在 POM 中的 `<build>` 元素中配置它们。
 
 - 报告插件（*Reporting Plugins*）
 
-    报告插件将在站点生成过程中执行，它们应该在 POM 的`<reporting>`元素中配置。由于报告插件的结果是生成的站点的一部分，因此报告插件应该同时进行国际化和本地化。
+    报告插件将在站点生成过程中执行，它们应该在 POM 的 `<reporting>` 元素中配置。由于报告插件的结果是生成的站点的一部分，因此报告插件应该同时进行国际化和本地化。
 
+> [!TIP]
+>
 > 可用的[插件列表](https://maven.apache.org/plugins/index.html#supported-by-the-maven-project)。
 
 ## 插件绑定
@@ -499,14 +511,16 @@ Maven 的生命周期阶段与插件目标相互绑定，以完成某个具体�
 
 ## 插件前缀
 
-可以使用插件前缀来引用的插件，例如`maven clean:clean`，一个前缀必须在插件构建时与它相关联。默认情况下，Maven 会通过移除插件的`artifactId`中被连字符包围的“maven”或“plugin”的来猜测要使用的插件前缀。常规的`artifactId`格式为：
+可以使用插件前缀来引用的插件，例如 `maven clean:clean`，一个前缀必须在插件构建时与它相关联。默认情况下，Maven 会通过移除插件的 artifactId 中被连字符包围的 “maven” 或 “plugin” 的来猜测要使用的插件前缀。常规的 artifactId 格式为：
 
 - `maven-${prefix}-plugin`
 - `${prefix}-maven-plugin`
 
-> `maven-${prefix}-plugin`通常是官方插件，对于自己实现的插件，不能使用这个命名规则。
+> [!WARNING]
+>
+> `maven-${prefix}-plugin` 通常是官方插件，对于自己实现的插件，不能使用这个命名规则。
 
-如果插件的`artifactId`符合这个模式，Maven 会自动将插件映射到元数据中的正确前缀，元数据存储在仓库的插件`groupId`路径中，Maven 会从远程仓库下载`maven-metadata.xml`到本地仓库的`groupId`路径中并且命名为`maven-metadata-${repoId}.xml`。如果想自定义插件前缀，则可以直接通过插件 POM 中`maven-plugin-plugin`上的配置参数指定前缀：
+如果插件的 artifactId 符合这个模式，Maven 会自动将插件映射到元数据中的正确前缀，元数据存储在仓库的插件 groupId 路径中，Maven 会从远程仓库下载 `maven-metadata.xml` 到本地仓库的 groupId 路径中并且命名为 `maven-metadata-${repoId}.xml`。如果想自定义插件前缀，则可以直接通过插件 POM 中 `maven-plugin-plugin` 上的配置参数指定前缀：
 
 ```xml
 <plugin>
@@ -518,7 +532,7 @@ Maven 的生命周期阶段与插件目标相互绑定，以完成某个具体�
 </plugin>
 ```
 
-默认情况下，Maven 会搜索`groupId`为`org.apache.maven.plugins`和`org.codehaus.mojo`来查找映射关系，对于第三方插件，需要配置搜索的`groupId`。可以在`${user.home}/.m2/settings.xml`文件中配置：
+默认情况下，Maven 会搜索 groupId 为 `org.apache.maven.plugins` 和 `org.codehaus.mojo` 来查找映射关系，对于第三方插件，需要配置搜索的 groupId。可以在 `${user.home}/.m2/settings.xml` 文件中配置：
 
 ```xml
 <pluginGroups>
@@ -546,7 +560,7 @@ Maven 的生命周期阶段与插件目标相互绑定，以完成某个具体�
 
 > 更好的做法是使用[工具链](##工具链)。
 
-javac 可以使用`-source`和`-target`，分别表示**提供与指定发行版的源兼容性**和**生成特定 VM 版本的类文件**，编译器插件用于编译项目的源代码，可以配置在编译期间提供这些选项，默认的源设置是1.8，默认的目标设置是1.8，这与运行 Maven 的 JDK 无关。有时候可能需要将某个项目编译到指定的 Java 版本。可以有以下方式来配置：
+javac 可以使用 `-source` 和 `-target`，分别表示**提供与指定发行版的源兼容性**和**生成特定 VM 版本的类文件**，编译器插件用于编译项目的源代码，可以配置在编译期间提供这些选项，默认的源设置是 1.8，默认的目标设置是 1.8，这与运行 Maven 的 JDK 无关。有时候可能需要将某个项目编译到指定的 Java 版本。可以有以下方式来配置：
 
 - 使用`<properties>`来指定
 
@@ -571,7 +585,7 @@ javac 可以使用`-source`和`-target`，分别表示**提供与指定发行版
     </plugin>
     ```
 
-设置`target`并不能保证代码实际上能在具有指定版本的 JRE 上运行，如果无意中使用了只存在于后来的 JRE 中的 API，这将使代码在运行时因链接错误而失败，要避免此问题，可以配置编译器以匹配目标 JRE，或者更好地使用自 JDK 9 以来支持的`--release`选项。同样，设置`source`并不能保证代码实际上在具有指定版本的 JDK 上编译。
+设置 `target` 并不能保证代码实际上能在具有指定版本的 JRE 上运行，如果无意中使用了只存在于后来的 JRE 中的 API，这将使代码在运行时因链接错误而失败，要避免此问题，可以配置编译器以匹配目标 JRE，或者更好地使用自 JDK 9 以来支持的`--release`选项。同样，设置 `source` 并不能保证代码实际上在具有指定版本的 JDK 上编译。
 
 从 JDK 9 开始，javac 可以接受`--release`选项来指定您想要针对哪个 Java SE 版本构建项目。例如，使用 JDK 11 并由 Maven 使用，但希望针对 Java 8 构建项目，`--release`选项确保代码是按照指定版本的编程语言规则编译的，并且生成的类针对该版本以及该版本的公共 API。与`--source`和`--target`选项不同，当使用以前版本中不存在的 API 时，编译器将检测并生成错误。从 3.6 版的编译插件开始，此选项可以通过属性提供：
 
