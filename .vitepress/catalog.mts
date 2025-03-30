@@ -30,6 +30,11 @@ let rawContentConfig: ContentConfig[] = [
     type: ContentType.NOTE,
     routeRewriteLink: "maven",
   },
+  {
+    text: "Docker",
+    type: ContentType.NOTE,
+    routeRewriteLink: "docker",
+  },
 ];
 
 function handler(): DefaultTheme.SidebarMulti {
