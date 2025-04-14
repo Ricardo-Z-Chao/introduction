@@ -35,6 +35,12 @@ let rawContentConfig: ContentConfig[] = [
     type: ContentType.NOTE,
     routeRewriteLink: "docker",
   },
+  {
+    text: "CMake查找外部依赖",
+    type: ContentType.ARTICLE,
+    isFirst: true,
+    routeRewriteLink: "cmake-find-package",
+  },
 ];
 
 function handler(): DefaultTheme.SidebarMulti {
