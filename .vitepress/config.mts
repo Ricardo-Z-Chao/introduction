@@ -1,6 +1,7 @@
 import { defineConfig } from "vitepress";
 import catalog from "./catalog.mts";
 import mermaidPlugin from "../plugins/markdown-it-mermaid.mts";
+import markdownItMathjax3 from 'markdown-it-mathjax3';
 
 const GITHUB = "https://github.com/Ricardo-Z-Chao";
 
@@ -19,7 +20,7 @@ export default defineConfig({
       lazyLoading: true,
     },
     config: (md) => {
-      md.use(mermaidPlugin);
+      md.use(mermaidPlugin).use(markdownItMathjax3)
     },
   },
   themeConfig: {
