@@ -563,11 +563,12 @@ Maven 的生命周期阶段与插件目标相互绑定，以完成某个具体�
 </plugin>
 ```
 
-> 更好的做法是使用[工具链](##工具链)。
+> [!NOTE]
+> 更好的做法是使用[工具链](#工具链)。
 
-javac 可以使用 `-source` 和 `-target`，分别表示**提供与指定发行版的源兼容性**和**生成特定 VM 版本的类文件**，编译器插件用于编译项目的源代码，可以配置在编译期间提供这些选项，默认的源设置是 1.8，默认的目标设置是 1.8，这与运行 Maven 的 JDK 无关。有时候可能需要将某个项目编译到指定的 Java 版本。可以有以下方式来配置：
+javac 可以使用 `--source` 和 `--target`，分别表示**提供与指定发行版的源兼容性**和**生成特定 VM 版本的类文件**，编译器插件用于编译项目的源代码，可以配置在编译期间提供这些选项，默认的源设置是 1.8，默认的目标设置是 1.8，这与运行 Maven 的 JDK 无关。有时候可能需要将某个项目编译到指定的 Java 版本，可以有以下方式来配置：
 
-- 使用`<properties>`来指定
+- 使用 `<properties>` 来指定
 
     ```xml
     <properties>
@@ -590,9 +591,9 @@ javac 可以使用 `-source` 和 `-target`，分别表示**提供与指定发行
     </plugin>
     ```
 
-设置 `target` 并不能保证代码实际上能在具有指定版本的 JRE 上运行，如果无意中使用了只存在于后来的 JRE 中的 API，这将使代码在运行时因链接错误而失败，要避免此问题，可以配置编译器以匹配目标 JRE，或者更好地使用自 JDK 9 以来支持的`--release`选项。同样，设置 `source` 并不能保证代码实际上在具有指定版本的 JDK 上编译。
+设置 `target` 并不能保证代码实际上能在具有指定版本的 JRE 上运行，如果无意中使用了只存在于后来的 JRE 中的 API，这将使代码在运行时因链接错误而失败，要避免此问题，可以配置编译器以匹配目标 JRE，或者更好地使用自 JDK 9 以来支持的 `--release` 选项。同样，设置 `source` 并不能保证代码实际上在具有指定版本的 JDK 上编译。
 
-从 JDK 9 开始，javac 可以接受`--release`选项来指定您想要针对哪个 Java SE 版本构建项目。例如，使用 JDK 11 并由 Maven 使用，但希望针对 Java 8 构建项目，`--release`选项确保代码是按照指定版本的编程语言规则编译的，并且生成的类针对该版本以及该版本的公共 API。与`--source`和`--target`选项不同，当使用以前版本中不存在的 API 时，编译器将检测并生成错误。从 3.6 版的编译插件开始，此选项可以通过属性提供：
+从 JDK 9 开始，javac 可以接受 `--release` 选项来指定您想要针对哪个 Java SE 版本构建项目。例如，使用 JDK 11 并由 Maven 使用，但希望针对 Java 8 构建项目，`--release` 选项确保代码是按照指定版本的编程语言规则编译的，并且生成的类针对该版本以及该版本的公共 API。与 `--source` 和 `--target` 选项不同，当使用以前版本中不存在的 API 时，编译器将检测并生成错误。从 3.6 版的编译插件开始，此选项可以通过属性提供：
 
 ```xml
 <properties>
@@ -633,14 +634,19 @@ javac 可以使用 `-source` 和 `-target`，分别表示**提供与指定发行
 
 ## 工具链
 
-Maven 工具链为项目提供了一种指定用于构建项目的 JDK（或其他工具）的方法，而无需在每个插件或每个`pom.xml`中配置。当使用 Maven 工具链指定 JDK 时，可以通过独立于 Maven 运行的 JDK 的特定版本来构建项目。要使用工具链，需要配置两个基本组件：
+Maven 工具链为项目提供了一种指定用于构建项目的 JDK（或其他工具）的方法，而无需在每个插件或每个 `pom.xml` 中配置。当使用 Maven 工具链指定 JDK 时，可以通过独立于 Maven 运行的 JDK 的特定版本来构建项目。要使用工具链，需要配置两个基本组件：
 
-1. 在项目的 POM 中指定`maven-toolchains-plugin`插件。
-2. 配置`toolchains.xml`文件。
+1. 在项目的 POM 中指定 `maven-toolchains-plugin` 插件。
 
-`maven-toolchains-plugin`用于设置项目中的工具链感知插件所使用的工具链：
+   `maven-toolchains-plugin` 用于设置项目中的工具链感知插件所使用的工具链。
 
-```xml
+2. 配置 `toolchains.xml` 文件。
+
+   `toolchains.xml` 文件是用于设置工具链安装路径的配置文件，此文件应放在 `${user.home}/.m2` 目录中，当 `maven-toolchains-plugin` 执行时，它会查找  `toolchains.xml` 文件，读取该文件并查找与插件中配置的工具链需求相匹配的工具链。
+
+::: code-group
+
+```xml [pom.xml]
 <plugins>
  ...
   <plugin>
@@ -672,9 +678,7 @@ Maven 工具链为项目提供了一种指定用于构建项目的 JDK（或其�
 </plugins>
 ```
 
-`toolchains.xml`文件是用于设置工具链安装路径的配置文件，此文件应放在`${user.home}/.m2`目录中，当`maven-toolchains-plugin`执行时，它会查找`toolchains.xml`文件，读取该文件并查找与插件中配置的工具链需求相匹配的工具链。
-
-```xml
+```xml [toolchains.xml]
 <toolchains>
   <!-- JDK toolchains -->
   <toolchain>
@@ -700,6 +704,8 @@ Maven 工具链为项目提供了一种指定用于构建项目的 JDK（或其�
 </toolchains>
 ```
 
+:::
+
 # 聚合与继承
 
 ## 聚合
@@ -720,30 +726,30 @@ Maven 工具链为项目提供了一种指定用于构建项目的 JDK（或其�
 </project>
 ```
 
-> 通常将聚合模块放在项目的顶层，其他模块则作为聚合模块的子目录存在。如果使用平行结构，聚合模块的 POM 也需要修改，`<module>`元素的值改为相对路径。
+> [!TIP]
+> 通常将聚合模块放在项目的顶层，其他模块则作为聚合模块的子目录存在。如果使用平行结构，聚合模块的 POM 也需要修改，`<module>` 元素的值改为相对路径。
 
 ## 继承
 
-通过在父模块 POM 中声明一些配置可以供子模块 POM 继承，父模块 POM 打包类型必须为 pom，子模块 POM 使用`<parent>`元素来继承父模块 POM。
+通过在父模块 POM 中声明一些配置可以供子模块 POM 继承，父模块 POM 打包类型必须为 pom，子模块 POM 使用 `<parent>` 元素来继承父模块 POM。
 
-```xml
+```xml{5}
 <parent>
     <artifactId>...</artifactId>
     <groupId>...</groupId>
     <version>...</version>
-    <!-- 表示父模块 POM 的相对路径-->
     <relativePath>../xxxx/pom.xml</relativePath>
 </parent>
 ```
 
-> 注意`<relativePath>`元素，它不是必需的，但可以用作 Maven 的一个标志，在搜索本地和远程存储库之前，首先搜索此路径作为此项目的父项目的路径。
->
+> [!TIP]
+> 注意 `<relativePath>` 元素，它不是必需的，但可以用作 Maven 的一个标志，在搜索本地和远程存储库之前，首先搜索此路径作为此项目的父项目的路径。
 
 任何一个 Maven 项目都隐式继承 Super POM，这个 POM 中定义了仓库和插件仓库，并且都关闭了 SNAPSHOT 的支持，同时也定义了项目结构，如主输出目录、主代码输出目录等等，这就是 Maven 项目结构的约定。
 
 1. 依赖管理
 
-    依赖也是可以继承的，Maven 提供了`<dependencyManagement>`元素既能让子模块继承到父模块的依赖配置，也能保证子模块依赖使用的灵活性。在`<dependencyManagement>`元素下的依赖声明不会引入实际的依赖，但能约束`<dependencies>`下的依赖使用。父模块中声明依赖后，子模块在使用依赖时无需声明版本，只需简单配置 gounpId 和 artifactId 就能获得对应的依赖。
+    依赖也是可以继承的，Maven 提供了 `<dependencyManagement>` 元素既能让子模块继承到父模块的依赖配置，也能保证子模块依赖使用的灵活性。在 `<dependencyManagement>` 元素下的依赖声明不会引入实际的依赖，但能约束 `<dependencies>` 下的依赖使用。父模块中声明依赖后，子模块在使用依赖时无需声明版本，只需简单配置 gounpId 和 artifactId 就能获得对应的依赖。
 
     ```xml
     <dependencyManagement>
@@ -758,7 +764,7 @@ Maven 工具链为项目提供了一种指定用于构建项目的 JDK（或其�
 
 2. 插件管理
 
-    类似的，Maven 提供了`<pluginManagement>`元素帮助管理依赖，在该元素中配置的依赖不会造成实际的插件调用行为，当 POM 中配置了真正的`<plugin>`元素，并且其 groupId 和 artifactId 与`<pluginManagement>`中配置的插件匹配时，`<pluginManagement>`的配置才会影响实际的插件行为。在父 POM 配置`<pluginManagement>`：
+    类似的，Maven 提供了 `<pluginManagement>` 元素帮助管理依赖，在该元素中配置的依赖不会造成实际的插件调用行为，当 POM 中配置了真正的 `<plugin>` 元素，并且其 groupId 和 artifactId 与 `<pluginManagement>` 中配置的插件匹配时，`<pluginManagement>` 的配置才会影响实际的插件行为。在父 POM 配置 `<pluginManagement>`：
 
     ```xml
     <build>
@@ -789,7 +795,7 @@ Maven 中处理多模块项目的机制称为 Reactor，Maven 核心的这一部
 - 插件声明，其中插件是构建中的另一个模块
 - 插件依赖于构建中的另一个模块
 - 生成中另一个模块上的生成扩展声明
-- 元素中声明的顺序`<modules>`
+- 元素中声明的顺序 `<modules>`
 
 有时候想要仅仅构建某些个模块，则需要实时地裁剪 Reactor，Maven 提供了一些命令行选项支持裁剪 Reactor：
 
@@ -804,7 +810,7 @@ mvn clean install -pl <module...>
 
 ## Maven 属性
 
-通过`<properties>`元素用户可以自定义一个或者多个 Maven 属性，然后在 POM 的其他地方使用`${property_name}`的方式引用该属性。Maven 属性分类如下：
+通过 `<properties>` 元素用户可以自定义一个或者多个 Maven 属性，然后在 POM 的其他地方使用 `${property_name}` 的方式引用该属性。Maven 属性分类如下：
 
 - 内置属性
 
@@ -825,7 +831,7 @@ mvn clean install -pl <module...>
 
 - 自定义属性
 
-  通过`<properties>`元素用户可以自定义一个或者多个 Maven 属性，然后在 POM 的其他地方使用`${value}`的方式引用该属性，例如：
+  通过 `<properties>` 元素用户可以自定义一个或者多个 Maven 属性，然后在 POM 的其他地方使用 `${value}` 的方式引用该属性，例如：
 
   ```xml
   <properties>
@@ -844,11 +850,11 @@ mvn clean install -pl <module...>
 
 - Settings 属性
 
-  用户使用`settings.`开头的属性引用`settings.xml`文件中 XML 元素的值，如`${settings.localRepository}`指向用户本地仓库。
+  用户使用 `settings.` 开头的属性引用 `settings.xml` 文件中 XML 元素的值，如 `${settings.localRepository}` 指向用户本地仓库。
 
 ## 资源过滤
 
-有些项目会在`src/main/resources`目录下放置数据库配置文件，如果测试人员进行测试的时候往往需要使用不同的数据库。为了应对环境的变化，首先要使用 Maven 属性将这些会发生变化的部分提取出来，使用 Maven 属性来代替：
+有些项目会在 `src/main/resources` 目录下放置数据库配置文件，如果测试人员进行测试的时候往往需要使用不同的数据库。为了应对环境的变化，首先要使用 Maven 属性将这些会发生变化的部分提取出来，使用 Maven 属性来代替：
 
 ```properties
 database.jdbc.driverClass = ${db.driver}
@@ -857,7 +863,7 @@ database.jdbc.username = ${db.username}
 database.jdbc.password = #{db.password}
 ```
 
-使用 profile 来定义 Maven 属性，同时为`src/main/resources`目录开启资源过滤，Maven 属性默认只有在 POM 中才会被解析，因此需要让 Maven 解析资源文件中的 Maven 属性。
+使用 profile 来定义 Maven 属性，同时为 `src/main/resources` 目录开启资源过滤，Maven 属性默认只有在 POM 中才会被解析，因此需要让 Maven 解析资源文件中的 Maven 属性。
 
 ```xml
 <profiles>
@@ -918,9 +924,9 @@ database.jdbc.password = #{db.password}
 
 编写插件的步骤如下：
 
-1. 使用 maven-archetype-plugin 来创建一个插件项目。插件本身也是 Maven 项目，它的`packaging`必须是`maven-plugin`。
+1. 使用 maven-archetype-plugin 来创建一个插件项目。插件本身也是 Maven 项目，它的 `packaging` 必须是 `maven-plugin`。
 
-2. 为插件编写目标，每个插件都必须包含一个或者多个目标，Maven 称之为 Mojo（*Maven Old Java Object*），编写插件的时候必须提供一个或多个继承自`AbstractMojo`的类。
+2. 为插件编写目标，每个插件都必须包含一个或者多个目标，Maven 称之为 Mojo（*Maven Old Java Object*），编写插件的时候必须提供一个或多个继承自 `AbstractMojo` 的类。
 
 3. 为目标提供配置点。大部分 Maven 插件及其目标都是可配置的，因此在编写 Mojo 的时候需要注意提供可配置的参数。
 
@@ -932,13 +938,14 @@ database.jdbc.password = #{db.password}
 
 ## Mojo Archetype
 
-创建一个新的插件工程，可以在命令行使用`maven-archetype-plugin`来生成一个插件工程：
+创建一个新的插件工程，可以在命令行使用 `maven-archetype-plugin` 来生成一个插件工程：
 
 ```shell
 mvn archetype:generate -DarchetypeArtifactId=maven-archetype-plugin
 ```
 
-> 通常Maven 插件命名为`${prefix}-maven-plugin`。
+> [!NOTE]
+> 通常 Maven 插件命名为 `${prefix}-maven-plugin`。
 
 ## 定义 Mojo
 
