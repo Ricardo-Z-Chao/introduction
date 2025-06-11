@@ -41,6 +41,10 @@ let rawContentConfig: ContentConfig[] = [
     isFirst: true,
     routeRewriteLink: "cmake-find-package",
   },
+  {
+    text: "Java",
+    type: ContentType.NOTE,
+  },
 ];
 
 function handler(): DefaultTheme.SidebarMulti {

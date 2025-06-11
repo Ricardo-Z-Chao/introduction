@@ -2,15 +2,58 @@
 title: Docker
 ---
 
-# 容器和虚拟机
+# 概括
 
 **容器**是软件的标准单元，是应用程序层的一个抽象，它将代码和依赖关系打包在一起，以便应用程序在不同的计算环境之间快速可靠地运行。多个容器可以运行在同一台机器上，并与其他容器共享操作系统内核，每个容器都作为用户空间中的独立进程运行。容器比 VM 占用更少的空间，可以处理更多的应用程序。
 
+```mermaid
+block-beta
+  columns 6
+  block:group1:6
+    %% columns auto (default)
+    l["APP A"]
+    m["APP B"]
+    n["APP C"]
+  end
+  a["Docker"]:6
+  b["Host Operating System"]:6
+  c["Infrastructure"]:6
+
+  classDef APP fill:#4591cd,color:#FFF
+  class l,m,n,a APP
+  style b fill:#d3eafa,color:#000
+  style c fill:#64c3ab,color:#FFF
+```
+
 **虚拟机**（VM）是将一台服务器转换为多台服务器的物理硬件的抽象。Hypervisor 允许多个 VM 在一台机器上运行。每个 VM 都包含一个操作系统、应用程序、必要的二进制文件和库的完整副本，这些文件占用了数十 GB，VM 启动也可能很慢。
 
-![](/figures/docker-containerized-and-vm-transparent-bg.jpg)
+```mermaid
+block-beta
+  columns 6
+  block:vm_1:2
+    columns 1
+    vm_1_1["APP A"]
+    vm_1_2["Guest Operating System"]
+  end
+  block:vm_2:2
+    columns 1
+    vm_2_1["APP A"]
+    vm_2_2["Guest Operating System"]
+  end
+  block:vm_3:2
+    columns 1
+    vm_3_1["APP A"]
+    vm_3_2["Guest Operating System"]
+  end
+  a["Hypervisor"]:6
+  b["Infrastructure"]:6
 
-# Docker
+  classDef APP fill:#4591cd,color:#FFF
+  class vm_1_1,vm_2_1,vm_3_1,a APP
+  classDef System fill:#d3eafa,color:#000
+  class vm_1_2,vm_2_2,vm_3_2 System
+  style b fill:#64c3ab,color:#FFF
+```
 
 Docker 是一个把开发的应用程序自动部署到容器的开源引擎，Docker 在虚拟化的容器执行环境中增加了一个应用程序部署引擎，用来提供一个轻量、快速的环境用来运行开发者的程序。
 
@@ -35,19 +78,6 @@ Docker 核心组件：
 # 安装
 
 参考官网[安装说明](https://docs.docker.com/engine/install/)，或者镜像站[安装说明](https://mirrors.tuna.tsinghua.edu.cn/help/docker-ce/)。
-
-```shell
-# 启动docker守护进程
-systemctl start docker
-# 停止服务
-systemctl stop docker
-# 查看状态
-systemctl status docker
-# 设置开机自动启动
-systemctl enable docker
-# 查看docker基本配置
-docker info
-```
 
 # 镜像
 
