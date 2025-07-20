@@ -1,0 +1,1 @@
+export const GITHUB_PAGES = ["https://github.com/Ricardo-Z-Chao"];
