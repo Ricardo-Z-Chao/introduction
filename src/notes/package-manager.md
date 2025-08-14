@@ -11,7 +11,7 @@ title: 包管理器
 npm install [-g] <package_name>
 ```
 
-`{prefix}` 路径默认为 Node 的安装目录，在大多数系统中，是 `/usr/local`，在 Windows 中，是 `%APPDATA%\npm`。npm 在默认情况下会从 [http://npmjs.org](http://npmjs.org) 搜索或下载包，包安装在 `{prefix}` 下的 `node_modules` 文件夹中。
+`{prefix}` 路径默认为 Node.js 的安装目录，在大多数系统中，是 `/usr/local`，在 Windows 中，是 `%APPDATA%\npm`。npm 在默认情况下会从 [http://npmjs.org](http://npmjs.org) 搜索或下载包，包安装在 `{prefix}` 下的 `node_modules` 文件夹中。
 
 ```shell
 # 查看安装路径，-g 选项表示全局模式下的路径
@@ -42,7 +42,7 @@ npm prefix [-g]
 
 ### .npmrc
 
-npm 从命令行、环境变量和 `.npmrc` 文件中获取配置，通过 `npm config` 命令来编辑用户和全局 `.npmrc` 文件。配置文件中以`#`和`;`开头的行会被解释为注释，可以在文件中使用环境变量。
+npm 从命令行、环境变量和 `.npmrc` 文件中获取配置，通过 `npm config` 命令来编辑用户和全局 `.npmrc` 文件。配置文件中以 `#` 和 `;` 开头的行会被解释为注释，可以在文件中使用环境变量。
 
 ```
 # this is a comment
@@ -263,7 +263,7 @@ npm update <name>
 npm run <command> [-- <args>]
 ```
 
-任何位置参数都将传递给指定的脚本，使用`--`传递`--`前缀标记和选项，否则这些标记和选项将被 npm 解析。参数只会传递给 npm 运行后指定的脚本，而不会传递给任何 pre 或 post 脚本。
+任何位置参数都将传递给指定的脚本，使用 `--` 传递 `--` 前缀标记和选项，否则这些标记和选项将被 npm 解析。参数只会传递给 npm 运行后指定的脚本，而不会传递给任何 pre 或 post 脚本。
 
 ```shell
 npm run test -- --grep="pattern"
@@ -295,11 +295,11 @@ npm run env
 
 ## 生命周期脚本
 
-有一些特殊的生命周期脚本只在某些情况下发生，这些脚本是在`pre<event>`、`post<event>`和`<event>`脚本之外发生的，详细参考[生命周期脚本](https://docs.npmjs.com/cli/v9/using-npm/scripts#life-cycle-scripts)。生命周期操作指令参考[生命周期操作规则](https://docs.npmjs.com/cli/v9/using-npm/scripts#life-cycle-operation-order)。
+有一些特殊的生命周期脚本只在某些情况下发生，这些脚本是在 `pre<event>`、`post<event>` 和 `<event>` 脚本之外发生的，详细参考[生命周期脚本](https://docs.npmjs.com/cli/v9/using-npm/scripts#life-cycle-scripts)。生命周期操作指令参考[生命周期操作规则](https://docs.npmjs.com/cli/v9/using-npm/scripts#life-cycle-operation-order)。
 
 ## 运行包
 
-此命令允许从本地安装或远程获取的 npm 包运行任意命令，与通过`npm run`运行类似。
+此命令允许从本地安装或远程获取的 npm 包运行任意命令，与通过 `npm run` 运行类似。
 
 ```shell
 npx <cmd> [args...]
@@ -307,7 +307,7 @@ npx <cmd> [args...]
 
 ## 链接
 
-使用 `npm link` 能够避免重复且繁琐的打包发布操作，能够将包链接到其他项目中。`npm link` 将在全局包安装目录中创建一个符号链接，链接到执行 `npm link` 命令的包，同时还将包中的任何 bin 链接到 `{prefix}/bin/{name}`。请注意，`npm link` 使用全局前缀（其值参见`npm prefix -g`）。如果要使用这个包，在其他项目中执行 `npm link <package-name>`，将创建一个从全局安装的`package-name` 到当前文件夹的 `node_modules` 的符号链接。
+使用 `npm link` 能够避免重复且繁琐的打包发布操作，能够将包链接到其他项目中。`npm link` 将在全局包安装目录中创建一个符号链接，链接到执行 `npm link` 命令的包，同时还将包中的任何 bin 链接到 `{prefix}/bin/{name}`。请注意，`npm link` 使用全局前缀（其值参见 `npm prefix -g`）。如果要使用这个包，在其他项目中执行 `npm link <package-name>`，将创建一个从全局安装的 `package-name` 到当前文件夹的 `node_modules` 的符号链接。
 
 ```shell
 npm link (in package dir)
